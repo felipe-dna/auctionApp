@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Novo usuário{% endblock %}
+
+{% block content %}
+    <h1>Novo usuário</h1>
+
+    <form method="post">
+        {{ form.hidden_tag() }}
+
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}<br>
+
+        {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+        {{ form.email.label }}<br>
+        {{ form.email(size=64) }}<br>
+
+        {% for error in form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+        {{ form.password1.label }}<br>
+        {{ form.password1(size=32) }}<br>
+
+        {% for error in form.password1.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+        {{ form.password2.label }}<br>
+        {{ form.password2(size=32) }}<br>
+
+        {% for error in form.password2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+        {{ form.submit() }}
+    </form>
+{% endblock %}

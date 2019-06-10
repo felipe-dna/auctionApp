@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+    {% for item in itens %}
+        <div>
+            <p>{{ item }} - preço atual: {{ item.price }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

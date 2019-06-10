@@ -1,0 +1,7 @@
+# db
+app.db
+
+__pycache__
+migrations
+
+venv
