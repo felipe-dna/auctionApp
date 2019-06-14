@@ -8,14 +8,37 @@ from flask_login import (
 
 from app import app, db
 from app.models import User, Item
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, ItemRegisterForm
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
-    itens = ['um']
-    return render_template('index.html', itens=itens)
+    form = ItemRegisterForm()
+
+    # validando o formulário
+    if form.validate_on_submit():
+        
+        # Nova instância de Item
+        new_item = Item(
+            name=form.name.data,
+            initial_price=form.initial_price.data,
+            expires_in=form.expires_in.data,
+            owner=current_user
+        )
+
+        # salvando
+        db.session.add(new_item)
+        db.session.commit()
+
+        # redirecionando
+        flash("Novo Item cadastrado e pronto para os lances!")
+        return redirect(url_for('index'))
+
+    # Buscando todos os itens cadastrados
+    itens = Item.query.order_by(Item.posted_at.desc()).all()
+
+    return render_template('index.html', itens=itens, form=form)
 
 
 @app.route('/logout')
@@ -35,13 +58,13 @@ def login():
     
     # Atribuindo o formulário
     form = LoginForm()
-    
+
     # Formulário é enviado:
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         
         if user is None or not user.check_password(form.password.data):
-            flash('Username ou senha inválida.')
+            flash('Nome de usuário ou senha inválida.')
             
             return redirect(url_for('login'))
         
@@ -50,7 +73,7 @@ def login():
 
         return redirect(url_for('index'))
     
-    return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -79,3 +102,15 @@ def register():
         return redirect(url_for('index'))
 
     return render_template('register.html', form=form)
+
+
+@app.route('/item/<id>/')
+def item(id):
+    item = Item.query.filter_by(id=id)
+
+    if item is None:
+        flash("Item {} não encontrado".format(item_id))
+        
+        return redirect(url_for('index'))
+    
+    return render_template('item.html', item=item)

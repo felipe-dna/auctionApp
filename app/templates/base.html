@@ -1,37 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="generator" content="Jekyll v3.8.5">
+
     <title>{% block title %}{% endblock %}</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/carousel/">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    {% block css %}{% endblock %}
 </head>
-<body>
-    
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Home</a></li>
 
-            {% if current_user.is_authenticated  %}
-            <li><a href="{{ url_for('logout') }}">Sair</a></li>
-            {% else %}
-            <li><a href="{{ url_for('login') }}">Login</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-    
-    <hr>
-    
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
+<body style="overflow: hidden;" class="col-md-12">
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand nav-link" style="background-color: #343a40;" href="{{ url_for('index') }}">Leilões Online</a>
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    {% if current_user.is_authenticated  %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Sair</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Cadastro</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-    {% block content %}{% endblock %}
+    <main role="main" style="margin-top: 40px;">
+        <div class="contaner">
+            <div class="row">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="col-md-12">
+                    <ul>
+                        {% for message in messages %}
+                            <li style="list-style: none;"><div class="alert alert-info" role="alert">{{ message }}</div></li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+                    <br>                    
+                </div>
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 </body>
 </html>

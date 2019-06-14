@@ -4,9 +4,77 @@
 
 {% block content %}
 
-    {% for item in itens %}
-        <div>
-            <p>{{ item }} - preço atual: {{ item.price }}</p>
+    {% if current_user.is_authenticated %}
+        <form method="post">
+            {{ form.hidden_tag() }}
+
+            <p>
+                {{ form.name.label }}<br />
+                {{ form.name }}<br />
+
+                {% for error in form.name.errors %}
+                    <span style="color: red">{{ error }}</span>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.initial_price.label }}<br />
+                {{ form.initial_price }}<br />
+
+                {% for error in form.initial_price.errors %}
+                    <span style="color: red">{{ error }}</span>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.expires_in.label }}<br />
+                {{ form.expires_in }}<br />
+
+                {% for error in form.expires_in.errors %}
+                    <span style="color: red">{{ error }}</span>
+                {% endfor %}
+            </p>
+
+            <p>{{ form.submit }}</p>
+        </form>
+    {% endif %}
+
+    <div class="col-md-12">
+        <h2>Itens</h2>
+    
+        {% if itens %}  
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+
+                <!-- table head-->
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>Preço atual</th>
+                        <th>Postado em</th>
+                        <th>Expira em</th>
+                    </tr>
+                </thead>
+
+                <!-- table body -->
+                <tbody>
+                    {% for item in itens %}
+                        <tr>
+                            <th><a href="{{ url_for('item', id=item.id ) }}">{{ item.id }}</a></th>
+                            <th>{{ item.name }}</th>
+                            <th>{{ item.initial_price }}</th>
+                            <th>{{ item.posted_at }}</th>
+                            <th>{{ item.expires_in }}</th>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
         </div>
-    {% endfor %}
+        {% else %}
+            <p>Nenhum item cadastrado ainda.</p>
+        {% endif %}
+    </div>
+
 {% endblock %}

@@ -1,5 +1,14 @@
+from datetime import datetime
+
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import (
+    StringField,
+    PasswordField,
+    BooleanField,
+    SubmitField,
+    DecimalField,
+    DateField
+)
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
 
 from app.models import User
@@ -40,3 +49,24 @@ class RegistrationForm(FlaskForm):
 
         if user is not None:
             raise ValidationError("Este email já está em uso.")
+
+
+# Formulário de cadastro de items para leiloar.
+class ItemRegisterForm(FlaskForm):
+    name = StringField(
+        'Nome do item', 
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Nome do Item"}
+    )
+    initial_price = DecimalField(
+        "Valor inicial para os lances",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Preço inicial"}
+    )
+    expires_in = DateField(
+        "Os lances para esse item expiram em ",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "aaaa-mm-dd"}
+    )
+    submit = SubmitField('Enviar')
+

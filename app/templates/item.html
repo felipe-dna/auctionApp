@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <h1>{{ item.name }}</h1>
+
+    <ul>
+    {% if item.bid_list %}
+        {% for bid in item.bid_list %}
+            <li><p>{{ bid }}</p></li>
+        {% endfor %}
+    {% else %}
+        <li><p>Nenhum lance feito ainda.</p></li>
+    {% endif %}
+    </ul>
+
+
+    <h3>Deseja fazer um lance?</h3>
+
+    <form method='post'>
+        <input type="text" placeholder="Seu lance" />
+        <input type="submit" value="Enviar" />
+    </form>
+{% endblock content %}
