@@ -7,9 +7,9 @@ from wtforms import (
     BooleanField,
     SubmitField,
     DecimalField,
-    DateField
 )
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
+from wtforms.fields.html5 import DateField
 
 from app.models import User
 
@@ -66,7 +66,6 @@ class ItemRegisterForm(FlaskForm):
     expires_in = DateField(
         "Os lances para esse item expiram em ",
         validators=[DataRequired()],
-        render_kw={"placeholder": "aaaa-mm-dd"}
     )
     submit = SubmitField('Enviar')
 
