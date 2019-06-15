@@ -36,24 +36,19 @@
         </nav>
     </header>
 
-    <main role="main" style="margin-top: 40px;">
-        <div class="contaner">
-            <div class="row">
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <div class="col-md-12">
-                    <ul>
-                        {% for message in messages %}
-                            <li style="list-style: none;"><div class="alert alert-info" role="alert">{{ message }}</div></li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    {% endwith %}
-                    <br>                    
-                </div>
-
-                {% block content %}{% endblock %}
+    <main role="main">
+        <div style="margin-top: 20px;">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="col-md-12 alert alert-info mr-auto ml-auto" role="alert">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
             </div>
+
+            <div class="row col-md-12" style="margin-top: 30px;">{% block content %}{% endblock %}</div>
         </div>
     </main>
 

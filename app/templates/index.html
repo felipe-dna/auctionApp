@@ -4,77 +4,77 @@
 
 {% block content %}
 
-    {% if current_user.is_authenticated %}
-    <div style="width: 100%; display: flex; justify-content:center;" class="text-center" cz-shortcut-listen="true">
-        <form class="form-signin" style="width: 400px;" method="post">
-            <img class="mb-4" src="https://blog.me.com.br/wp-content/uploads/2018/02/leil%C3%A3o-reverso.jpg" alt="" width="72" height="72">
-            <h1 class="h3 mb-3 font-weight-normal">Cadastrar novo item</h1>
-    
-            {{ form.hidden_tag() }}
-    
-            {{ form.name(class="form-control", placeholder="Nome do item") }} <br />
-            {% for error in form.name.errors %}
-            <div class="col-md-12 alert alert-danger">
-                <p>{{ error }}</p>
-            </div>
-            {% endfor %}
-    
-            {{ form.initial_price(class="form-control", placeholder="Preço inicial em R$") }} <br />
-            {% for error in form.initial_price.errors %}
-            <div class="col-md-12 alert alert-danger">
-                <p>{{ error }}</p>
-            </div>
-            {% endfor %}
-            
-            {{ form.expires_in(class="form-control", placeholder="Expira em: aaaa-mm-dd") }} <br />
-            {% for error in form.expires_in.errors %}
-            <div class="col-md-12 alert alert-danger">
-                <p>{{ error }}</p>
-            </div>
-            {% endfor %}
-    
-            {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
-        </form>
-    </div>
-    {% endif %}
+{% if current_user.is_authenticated %}
+<div style="width: 100%; display: flex; justify-content:center;" class="text-center" cz-shortcut-listen="true">
+    <form class="form-signin" style="width: 400px;" method="post">
+        <img class="mb-4" src="{{ url_for('static', filename='img/leilão-reverso.jpg') }}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Cadastrar novo item</h1>
 
-    <div class="col-md-12">
-        <h2>Itens</h2>
-    
-        {% if itens %}  
-        <div class="table-responsive">
-            <table class="table table-striped table-sm">
+        {{ form.hidden_tag() }}
 
-                <!-- table head-->
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nome</th>
-                        <th>Preço atual</th>
-                        <th>Postado em</th>
-                        <th>Expira em</th>
-                    </tr>
-                </thead>
-
-                <!-- table body -->
-                <tbody>
-                    {% for item in itens %}
-                        <tr>
-                            <th>{{ item.id }}</th>
-                            <th><a href="{{ url_for('item', id=item.id ) }}">{{ item.name }}</a></th>
-                            <th>R$ {{ item.initial_price }}</th>
-                            <th>{{ item.posted_at.strftime('%d/%m/%y') }}</th>
-                            <th>{{ item.expires_in.strftime('%d/%m/%y') }}</th>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-
-            </table>
+        {{ form.name(class="form-control", placeholder="Nome do item") }} <br />
+        {% for error in form.name.errors %}
+        <div class="col-md-12 alert alert-danger">
+            <p>{{ error }}</p>
         </div>
-        {% else %}
-            <p>Nenhum item cadastrado ainda.</p>
-        {% endif %}
+        {% endfor %}
+
+        {{ form.initial_price(class="form-control", placeholder="Preço inicial em R$") }} <br />
+        {% for error in form.initial_price.errors %}
+        <div class="col-md-12 alert alert-danger">
+            <p>{{ error }}</p>
+        </div>
+        {% endfor %}
+        
+        {{ form.expires_in(class="form-control", placeholder="Expira em:") }} <br />
+        {% for error in form.expires_in.errors %}
+        <div class="col-md-12 alert alert-danger">
+            <p>{{ error }}</p>
+        </div>
+        {% endfor %}
+
+        {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
+    </form>
+</div>
+{% endif %}
+
+<div class="col-md-12">
+    <h2>Itens</h2>
+
+    {% if itens %}  
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+
+            <!-- table head-->
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Preço atual</th>
+                    <th>Postado em</th>
+                    <th>Expira em</th>
+                </tr>
+            </thead>
+
+            <!-- table body -->
+            <tbody>
+                {% for item in itens %}
+                    <tr>
+                        <th>{{ item.id }}</th>
+                        <th><a href="{{ url_for('item', id=item.id ) }}">{{ item.name }}</a></th>
+                        <th>R$ {{ item.initial_price }}</th>
+                        <th>{{ item.posted_at.strftime('%d/%m/%y') }}</th>
+                        <th>{{ item.expires_in.strftime('%d/%m/%y') }}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
     </div>
+    {% else %}
+        <p>Nenhum item cadastrado ainda.</p>
+    {% endif %}
+</div>
 
 {% endblock %}
 

@@ -25,9 +25,9 @@
 
 {% block content %}
 <div style="width: 100%; display: flex; justify-content:center;" class="text-center" cz-shortcut-listen="true">
-	<form class="form-signin" method="post">
-		<img class="mb-4" src="https://blog.me.com.br/wp-content/uploads/2018/02/leil%C3%A3o-reverso.jpg" alt="" width="72" height="72">
-		<h1 class="h3 mb-3 font-weight-normal">Login</h1>
+	<form class="form-signin" method="post" style="width: 300px">
+        <img class="mb-4" src="{{ url_for('static', filename='img/leilão-reverso.jpg') }}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Login</h1>
 
 		{{ form.hidden_tag() }}
 		{{ form.username(class="form-control", placeholder="Nome de usuário") }} <br />

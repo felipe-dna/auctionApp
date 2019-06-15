@@ -7,6 +7,7 @@ from wtforms import (
     BooleanField,
     SubmitField,
     DecimalField,
+    FloatField
 )
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
 from wtforms.fields.html5 import DateField
@@ -69,3 +70,8 @@ class ItemRegisterForm(FlaskForm):
     )
     submit = SubmitField('Enviar')
 
+
+# Formulário de cadastro de lances;
+class BidRegisterForm(FlaskForm):
+    value = FloatField("Valor do lance", validators=[DataRequired()])
+    submit = SubmitField('Enviar')

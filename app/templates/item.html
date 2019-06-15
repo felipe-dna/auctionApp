@@ -1,24 +1,124 @@
 {% extends 'base.html' %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/item-style.css') }}">
+{% endblock css %}
 
 {% block content %}
-    <h1>{{ item.name }}</h1>
+<div class="col-md-12">
+    <div class="d-flex align-items-center p-3 text-white-50 bg-purple rounded shadow-sm" style="position: relative;">
+        <img class="mr-3" src="{{ url_for('static', filename='img/leilão-reverso.jpg') }}" alt="" width="100" height="100">
+        <div class="lh-100">
+            <h2 class="mb-0 text-white lh-100">
+                {{ item.name }} está sendo leiloado(a) por {% if item.owner == current_user %}você {% else %} {{ item.owner.username }} {% endif %}
+            </h2>
+            <br>
+            <p style="color: #FFF; margin-top: 5px;">Lances abertos té {{ item.expires_in.strftime('%d/%m/%y') }}</p>
+            <h6>Os lances agora estão em R$ {{ item.best_bid.value }}</h6>
+        </div>
+    </div>
 
-    <ul>
-    {% if item.bid_list %}
-        {% for bid in item.bid_list %}
-            <li><p>{{ bid }}</p></li>
-        {% endfor %}
-    {% else %}
-        <li><p>Nenhum lance feito ainda.</p></li>
-    {% endif %}
-    </ul>
+    <div class="row p-3" style="position: relative;">
+        <!-- formulário de registro de lances -->
+        <div class="col-3 mr-auto my-3 p-3 bg-white rounded shadow-sm">
 
+            <h3>Novo lance</h3>
+            
+            {% if current_user.is_authenticated %}
+            <form method='post' class="form-inline row" style="display: flex; justify-content: center;">
+        		{{ form.hidden_tag() }}
+                {{ form.value(placeholder="Valor do lance em R$", class="form-control col-8") }}
+                {{ form.submit(class="btn btn-primary col-3") }}
+            </form>
+            {% else %}
+            <p class="text-danger">Você precisa estar logado para dar ofertas.</p>
+            {% endif %}
+        </div>
+        
+        <!-- lista de lances -->
+        <div class="col-8 my-3 p-3 bg-white rounded shadow-sm">
+            <h3 class="border-bottom border-gray pb-2 mb-0">Lances neste item</h3>
 
-    <h3>Deseja fazer um lance?</h3>
+            {% if item.bids %}
 
-    <form method='post'>
-        <input type="text" placeholder="Seu lance" />
-        <input type="submit" value="Enviar" />
-    </form>
+                <!-- Best Bid -->
+                <div class="media text-muted pt-3 alert alert-success border-bottom border-success">
+                    <div class="pb-3 mb-0 lh-125 col-md-12">
+                        <div class="row" style="display: flex; flex-direction: row; justify-content: space-between;">
+                            
+                            <!-- value -->
+                            <div class="col-md-3 d-flex justify-content-center">
+                                <strong class="text-gray-dark">R$ {{ item.best_bid.value }}</strong>
+                            </div>
+
+                            <!-- usuario que fez o lance -->
+                            <div class="col-md-3 d-flex justify-content-center">
+                                <strong class="text-gray-dark">
+                                    Feito por 
+                                    {% if item.best_bid.author == current_user %}
+                                        Você.
+                                    {% else %}
+                                        {{ item.best_bid.author.username }}.
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <!-- frase de melhor oferta -->
+                            <div class="col-md-6 d-flex justify-content-center">
+                                <strong class="text-gray-dark">
+                                    {% if item.best_bid.author == current_user %}
+                                        Parabéns, sua oferta está na frente!
+                                    {% elif item.owner == current_user %}
+                                        <a href="#" class="btn btn-success">Deseja aceitar esta oferta?</a>
+                                    {% else %}
+                                        Melhor oferta!
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+
+                <!-- Rejected Bid-->
+                {% for bid in item.bids %}
+                    {% if bid.best_bid == False %}
+                        <div class="media text-muted pt-3 alert alert-danger border-bottom border-danger">
+                            <div class="pb-3 mb-0 lh-125 col-md-12">
+                                <div class="row" style="display: flex; flex-direction: row; justify-content: space-between;">
+                                
+                                    <!-- value -->
+                                    <div class="col-md-3 d-flex justify-content-center">
+                                        <strong class="text-gray-dark">R$ {{ bid.value }}</strong>
+                                    </div>
+
+                                    <!-- usuario que fez o lance -->
+                                    <div class="col-md-3 d-flex justify-content-center">
+                                        <strong class="text-gray-dark">
+                                        Feito por
+                                        {% if bid.author == current_user %}Você{% else %}{{ bid.author.username }}{% endif %}
+                                        </strong>
+                                    </div>
+
+                                    <div class="col-md-6 d-flex justify-content-center">
+                                        <strong class="text-gray-dark">
+                                            {% if bid.author == current_user %}
+                                                Infelizmente seu lance foi ultrapassado.
+                                            {% else %}
+                                                Lance ultrapassado.
+                                            {% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+
