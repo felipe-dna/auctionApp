@@ -19,6 +19,7 @@ $ pip install -r requirements.txt
 ```
 $ export FLASK_APP=manage.py
 $ export FLASK_ENV=development
+$ export FLASK_DEBUG=1
 ```
 
 <h2>Banco de dados</h2>
