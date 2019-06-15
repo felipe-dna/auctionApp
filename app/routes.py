@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from flask import render_template, url_for, redirect, flash
+
 from flask_login import (
     current_user,
     login_user,
@@ -54,7 +56,10 @@ def index():
         return redirect(url_for('index'))
 
     # Buscando todos os itens cadastrados
-    itens = Item.query.order_by(Item.posted_at.desc()).all()
+    itens = Item.query.order_by(
+        Item.posted_at.desc()
+    ).filter_by(finished_off=False)
+
 
     return render_template('index.html', itens=itens, form=form)
 # + -------------------------------------------------------------------------- +
@@ -143,9 +148,20 @@ def item(id):
     # buscando a melhor oferta neste item
     best_bid = Bid.query.filter_by(item=item, best_bid=True).first()
     if best_bid == None:
-        item.best_bid = item.initial_price
+        item.best_bid = None
+        print(item.best_bid)
     else:
         item.best_bid = best_bid
+
+    # se a data limite já estiver passado o sistema atualiza os dados.
+    if datetime.now() > item.expires_in:
+        item.finished_off=True
+        db.session.commit()
+
+    # Item não encontrado.
+    if item is None:
+        flash("Item {} não encontrado".format(item_id))
+        return redirect(url_for('index'))
 
     # Formulário.
     form = BidRegisterForm()
@@ -198,12 +214,36 @@ def item(id):
 
         flash("Parabéns! Novo lance feito cadastrado com sucesso.")
         return redirect(url_for('item', id=item.id))
-
-    # Item não encontrado.
-    if item is None:
-        flash("Item {} não encontrado".format(item_id))
-        
-        return redirect(url_for('index'))
     
     return render_template('item.html', form=form, item=item)
+# + -------------------------------------------------------------------------- +
+
+
+# Aceitar ofertas
+# + -------------------------------------------------------------------------- +
+@app.route('/item/<id>/accept')
+def accept(id):
+    
+    # Buscando item
+    item = Item.query.filter_by(id=id).first_or_404()
+    
+    # Validando o item
+    if item is None:
+        flash("Item não encontrado, tente novamente.")
+
+    elif item is not None:
+        item.finished_off=True
+        db.session.commit()
+
+        print('>> 1')
+
+        # Adicionando a melhor oferta para o objeto de item
+        item.best_bid = Bid.query.filter_by(item=item, best_bid=True).first()
+
+        # Retornando uma mensagem de sucesso.
+        flash("Parabéns, você acabou de vender um(a) {} por R${} para {}!".format(
+            item.name, item.best_bid.value, item.best_bid.author.username
+        ))
+
+    return redirect(url_for('index'))
 # + -------------------------------------------------------------------------- +

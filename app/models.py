@@ -40,6 +40,7 @@ class Item(db.Model):
     initial_price = db.Column(db.Float)
     posted_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     expires_in = db.Column(db.DateTime)
+    finished_off = db.Column(db.Boolean, index=True, default=False)
 
     # chaves estrangeiras
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
